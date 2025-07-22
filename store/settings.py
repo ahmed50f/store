@@ -39,11 +39,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #My Apps
     'rest_framework',
+    'django_filters',
+    'drf_yasg',
     'products',
     'Authentication',
-    'django_filters',
-    'rest_framework_swagger',
-    'drf_yasg',
+    'ProductLove',
+    'Cart',
+    
+
+    
+    
 ]
     
 

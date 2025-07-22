@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Category, Product, Rating, Order, CartItem, Cart
+from .models import Category, Product, Rating, Order, Shipping
+
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -41,18 +42,14 @@ class OrderSerializer(serializers.ModelSerializer):
         return data
 
 
-class CartItemSerializer(serializers.ModelSerializer):
-    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+class ShippingSerializer(serializers.ModelSerializer):
+    delivery_date = serializers.SerializerMethodField()
 
     class Meta:
-        model = CartItem
-        fields = '__all__'
+        model = Shipping
+        fields = '__all__'  
+        
+    def get_delivery_date(self, obj):
+        return obj.delivery_date        
+        
 
-
-class CartSerializer(serializers.ModelSerializer):
-    items = CartItemSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Cart
-        fields = '__all__'
-        read_only_fields = ('user',)

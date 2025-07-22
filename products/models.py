@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.contrib.auth.models import User
-
+from datetime import timedelta
+from django.utils.timezone import now
 
 # Create your models here.
 
@@ -43,18 +43,20 @@ class Order(models.Model):
     def __str__(self):
         return f"Order for {self.product.title} - {self.quantity} pcs"
     
-class Cart(models.Model):
-    user = models.ForeignKey('auth.User', related_name='cart', on_delete=models.CASCADE)
-    products = models.ManyToManyField(Product, through='CartItem')
-
-    def __str__(self):
-        return f"Cart of {self.user.username}"
-    
-class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, related_name='items', on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, related_name='cart_items', on_delete=models.CASCADE)
+class Shipping(models.Model):
+    product = models.ForeignKey(Product, related_name='shipping', on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
-
-    def __str__(self):
-        return f"{self.quantity} of {self.product.title} in {self.cart.user.username}'s cart"
+    address = models.CharField(max_length=255, default="Default Address")
+    city = models.CharField(max_length=100, default="Default City")
+    state = models.CharField(max_length=100, default="Default State")
+    zip_code = models.CharField(max_length=20, default="Default Zip Code")
+    created_at = models.DateTimeField(auto_now_add=True)
+    @property
+    def delivery_date(self):
+        min_day =2
+        max_day = 5
+        avg_day = (min_day + max_day) // 2
+        return self.created_at + timedelta(days=avg_day)
     
+    def __str__(self):
+        return f"Shipping for {self.product.name} - Quantity: {self.quantity}"

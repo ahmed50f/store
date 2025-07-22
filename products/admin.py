@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Category, Product, Rating , Order
+from .models import Category, Product, Rating , Order, Shipping
+
 
 # Register your models here.
 class CategoryAdmin(admin.ModelAdmin):
@@ -22,7 +23,18 @@ class OrderAdmin(admin.ModelAdmin):
     search_fields = ('product__title',)
     list_filter = ('order_date',)
 
+class ShippingAdmin(admin.ModelAdmin):
+    list_display = ('product', 'shipping_date_display', 'quantity')
+
+    def shipping_date_display(self, obj):
+        return obj.delivery_date
+    shipping_date_display.short_description = 'Estimated Delivery Date'
+
+
+
+
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Rating, RatingAdmin)
 admin.site.register(Order, OrderAdmin)
+admin.site.register(Shipping, ShippingAdmin)
